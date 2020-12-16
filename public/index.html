@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas tree generator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <table class="form-input">
+        <tr>
+            <th colspan="2">Character</th>
+            <th colspan="2">Height & Width</th>
+            <th colspan="2">Size & Spacing</th>
+            <th colspan="2">Color</th>
+        </tr>
+        <tr>
+            <!-- character -->
+            <td>Top:</td>
+            <td><input type="text" id="top" value="*"></td>
+            <!-- height & width -->
+            <td>Tree height:</td>
+            <td><input type="number" id="tree-height" onkeypress="return event.charCode >= 48" min="0"></td>
+            <!-- size and spacing -->
+            <td>Top size:</td>
+            <td><input type="number" id="top-size" value="30" onkeypress="return event.charCode >= 48" min="1">(px)
+            </td>
+            <!-- color -->
+            <td>Top color:</td>
+            <td><input type="color" id="top-color-picker"><input type="text" id="top-color"
+                    placeholder="*color name or hex code*"></td>
+        </tr>
+        <tr>
+            <td>Body:</td>
+            <td><input type="text" id="body" value="*"></td>
+            <td>Trunk height:</td>
+            <td><input type="number" id="trunk-height" onkeypress="return event.charCode >= 48" min="0"></td>
+            <td>Tree size:</td>
+            <td><input type="number" id="tree-size" value="30" onkeypress="return event.charCode >= 48" min="1">(px)
+            </td>
+            <td>Body color:</td>
+            <td><input type="color" id="body-color-picker"><input type="text" id="body-color"
+                    placeholder="*color name or hex code*"></td>
+        </tr>
+        <tr>
+            <td>Trunk:</td>
+            <td><input type="text" id="trunk" value="*"></td>
+            <td>Trunk width:</td>
+            <td><input type="number" id="trunk-width" onkeypress="return event.charCode >= 48" min="0"></td>
+            <td>Line height:</td>
+            <td><input type="number" id="line-height" step="0.1" value="0.5" onkeypress="return event.charCode >= 48"
+                    min="0">(rem)</td>
+            <td>Trunk color:</td>
+            <td><input type="color" id="trunk-color-picker"><input type="text" id="trunk-color"
+                    placeholder="*color name or hex code*"></td>
+        </tr>
+        <tr>
+            <td>
+                <button id="submit">Generate</button>
+                <button id="default">Default</button>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Letter spacing:</td>
+            <td><input type="number" id="letter-spacing" step="0.1" value="0.5" onkeypress="return event.charCode >= 48"
+                    min="0">(rem)</td>
+            <td>Background color:</td>
+            <td><input type="color" id="background-color-picker"><input type="text" id="background-color"
+                    placeholder="*color name or hex code*"></td>
+        </tr>
+    </table>
+    <br>
+    <table class="canvas"></table>
+</body>
+<style>
+    .form-input {
+        margin: auto;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .form-input td:nth-child(even) {
+        padding-right: 70px;
+    }
+
+    .canvas {
+        width: 100%;
+        text-align: center;
+        line-height: 0.5rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .canvas p {
+        display: inline;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#top-color-picker').on('input',
+            function () {
+                $("#top-color").val($(this).val());
+            }
+        );
+        $('#body-color-picker').on('input',
+            function () {
+                $("#body-color").val($(this).val());
+            }
+        );
+        $('#trunk-color-picker').on('input',
+            function () {
+                $("#trunk-color").val($(this).val());
+            }
+        );
+        $('#background-color-picker').on('input',
+            function () {
+                $("#background-color").val($(this).val());
+            }
+        );
+        $("#submit").click(function () {
+            generate();
+        });
+        $("#default").click(function () {
+            $("#character").val("*");
+            $("#tree-height").val("20");
+            $("#trunk-height").val("5");
+            $("#trunk-width").val("5");
+            $("#top-color").val("yellow");
+            $("#body-color").val("green");
+            $("#trunk-color").val("brown");
+            $("#top-size").val("40");
+            $("#tree-size").val("20");
+            $("#background-color").val("black");
+            $("#line-height").val("0.8");
+            $("#letter-spacing").val("0");
+            $("#top").val("★");
+            $("#body").val("/*\\");
+            $("#trunk").val("|||");
+            generate();
+        });
+        function generate() {
+            $(".canvas tr").remove();
+            var top = $("#top").val();
+            var body = $("#body").val();
+            var trunk = $("#trunk").val();
+            var treeHeight = $("#tree-height").val();
+            var trunkHeight = $("#trunk-height").val();
+            var trunkWidth = $("#trunk-width").val();
+            var topColor = $("#top-color").val();
+            var bodyColor = $("#body-color").val();
+            var trunkColor = $("#trunk-color").val();
+            var topSize = $("#top-size").val() + "px";
+            var treeSize = $("#tree-size").val() + "px";
+            var lineHeight = $("#line-height").val() + "rem";
+            var letterSpacing = $("#letter-spacing").val() + "rem";
+            var backgroundColor = $("#background-color").val();
+            var contentBody = body;
+            var contentTrunk = trunk;
+            $(".canvas").append("<tr><td><p class='top'>" + top + "</p></td></tr>");
+            for (var i = 0; i < treeHeight; i++) {
+                var rowContent = "<tr><td><p class='body'>" + contentBody + "</p></td></tr>";
+                $(".canvas").append(rowContent);
+                contentBody += body;
+            }
+            if (trunkHeight > 0 && trunkWidth > 0) {
+                let contentTrunk = "";
+                for (var i = 0; i < trunkWidth; i++) {
+                    contentTrunk += trunk;
+                }
+                for (var i = 0; i < trunkHeight; i++) {
+                    let rowContent = "<tr><td><p class='trunk'>" + contentTrunk + "</p></td></tr>";
+                    $(".canvas").append(rowContent);
+                }
+            } else if ((!trunkHeight > 0 && trunkWidth > 0) || (trunkHeight > 0 && !trunkWidth > 0)) {
+                alert("You must fill both trunk height and trunk width!")
+            }
+            document.querySelectorAll('.canvas .top').forEach(e => e.style.fontSize = topSize);
+            document.querySelectorAll('.canvas .body, .trunk').forEach(e => e.style.fontSize = treeSize);
+            document.querySelectorAll('.canvas').forEach(e => e.style.lineHeight = lineHeight);
+            document.querySelectorAll('.canvas').forEach(e => e.style.letterSpacing = letterSpacing);
+            document.querySelectorAll('.canvas .top').forEach(e => e.style.color = topColor);
+            document.querySelectorAll('.canvas .body').forEach(e => e.style.color = bodyColor);
+            document.querySelectorAll('.canvas .trunk').forEach(e => e.style.color = trunkColor);
+            document.body.style.backgroundColor = backgroundColor;
+        }
+    });
+</script>
+
+</html>
